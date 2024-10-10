@@ -19,5 +19,8 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/candidates", handlers.GetCandidates).Methods("GET")
 	r.HandleFunc("/candidates/new", handlers.PostCandidate).Methods("POST")
 
+	// New application route
+	r.HandleFunc("/applications", handlers.PostApplication).Methods("POST")
+
 	return r
 }
