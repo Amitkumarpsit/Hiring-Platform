@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getJobs } from '../api/api';
+import ApplicationForm from './ApplicationForm';
 
 function JobList() {
   const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -15,6 +17,14 @@ function JobList() {
     };
     fetchJobs();
   }, []);
+
+  const handleApply = (job) => {
+    setSelectedJob(job);
+  };
+
+  const handleCloseForm = () => {
+    setSelectedJob(null);
+  };
 
   return (
     <div>
@@ -29,8 +39,15 @@ function JobList() {
             <p><strong>Location:</strong> {job.Location}</p>
             <p><strong>Responsibilities:</strong> {job.Responsibilities}</p>
             <p><strong>Qualifications:</strong> {job.Qualifications}</p>
+            <button onClick={() => handleApply(job)}>Apply</button>
           </div>
         ))
+      )}
+      {selectedJob && (
+        <div>
+          <h3>Apply for {selectedJob.Title}</h3>
+          <ApplicationForm jobId={selectedJob.ID} onClose={handleCloseForm} />
+        </div>
       )}
     </div>
   );
