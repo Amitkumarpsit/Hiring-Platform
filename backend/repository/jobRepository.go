@@ -24,3 +24,8 @@ func GetAllJobs() ([]models.Job, error) {
 	err = cursor.All(context.Background(), &jobs)
 	return jobs, err
 }
+
+func CreateApplication(application models.Application) error {
+	_, err := config.DB.Collection("applications").InsertOne(context.Background(), application)
+	return err
+}
