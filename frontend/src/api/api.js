@@ -12,4 +12,16 @@ export const getCandidates = () => api.get('/candidates');
 export const postCandidate = (candidate) => api.post('/candidates/new', candidate);
 export const updateProfile = (profile) => api.put('/profile', profile);
 
+// Updated submitApplication function
+export const submitApplication = async (applicationData) => {
+  try {
+    const response = await api.post('/applications', applicationData);
+    console.log('Application submission response:', response);
+    return response;
+  } catch (error) {
+    console.error('Error submitting application:', error.response || error);
+    throw error;
+  }
+};
+
 export default api;
