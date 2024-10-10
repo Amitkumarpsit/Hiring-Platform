@@ -1,9 +1,9 @@
-// backend/config/config.go
 package config
 
 import (
 	"context"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,14 +11,17 @@ import (
 
 var DB *mongo.Database
 
-// ConnectDB initializes the MongoDB connection
 func ConnectDB() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = client.Ping(context.TODO(), nil)
+
+	err = client.Ping(ctx, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
