@@ -1,0 +1,43 @@
+{
+    "name": "gobrocodes-fullstack",
+    "version": "1.0.0",
+    "description": "Frontend for GoBroCodes FullStack project",
+    "main": "index.js",
+    "scripts": {
+        "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "dependencies": {
+        "@chakra-ui/react": "^2.10.2",
+        "@emotion/react": "^11.13.3",
+        "@emotion/styled": "^11.13.0",
+        "axios": "^0.21.4",
+        "cross-env": "^7.0.3",
+        "framer-motion": "^11.11.7",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-icons": "^5.3.0",
+        "react-router-dom": "^6.26.2",
+        "react-scripts": "4.0.3"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
