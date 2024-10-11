@@ -60,6 +60,7 @@ func PostApplication(w http.ResponseWriter, r *http.Request) {
 		AppliedAt:     time.Now(),
 	}
 
+	// Save the application to the database
 	err = repository.CreateApplication(application)
 	if err != nil {
 		log.Printf("Error creating application: %v", err)
@@ -67,6 +68,12 @@ func PostApplication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Send acknowledgment to the user
+	response := map[string]string{
+		"message": "Application submitted successfully",
+	}
+
+	// Respond to the user with a success message
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Application submitted successfully"})
+	json.NewEncoder(w).Encode(response)
 }
