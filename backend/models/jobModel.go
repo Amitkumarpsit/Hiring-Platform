@@ -1,4 +1,3 @@
-// backend/models/jobModel.go
 package models
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,4 +10,17 @@ type Job struct {
 	Responsibilities string             `bson:"responsibilities"`
 	Qualifications   string             `bson:"qualifications"`
 	Location         string             `bson:"location"`
+	Category         string             `bson:"category"`
 }
+
+// JobCategory defines the available job categories
+type JobCategory string
+
+const (
+	ITJob          JobCategory = "IT"
+	SalesJob       JobCategory = "Sales"
+	MarketingJob   JobCategory = "Marketing"
+	HRJob          JobCategory = "HR"
+	EngineeringJob JobCategory = "Engineering"
+	OtherJob       JobCategory = "Other"
+)
