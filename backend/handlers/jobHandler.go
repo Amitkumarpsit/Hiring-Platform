@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -23,12 +24,41 @@ func GetJobs(w http.ResponseWriter, r *http.Request) {
 // Post a new job
 func PostJob(w http.ResponseWriter, r *http.Request) {
 	var job models.Job
-	json.NewDecoder(r.Body).Decode(&job)
+	err := json.NewDecoder(r.Body).Decode(&job)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate the job category
+	switch models.JobCategory(job.Category) {
+	case models.ITJob, models.SalesJob, models.MarketingJob, models.HRJob, models.EngineeringJob, models.OtherJob:
+		// Category is valid
+	default:
+		http.Error(w, "Invalid job category", http.StatusBadRequest)
+		return
+	}
+
 	job.ID = primitive.NewObjectID()
-	err := repository.CreateJob(job)
+	err = repository.CreateJob(job)
 	if err != nil {
 		http.Error(w, "Failed to post job", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+// GetJobsByCategory handles retrieving jobs by category
+func GetJobsByCategory(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	category := vars["category"]
+
+	jobs, err := repository.GetJobsByCategory(category)
+	if err != nil {
+		http.Error(w, "Failed to get jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(jobs)
 }
