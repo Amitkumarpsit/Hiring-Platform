@@ -14,6 +14,7 @@ func SetupRoutes() *mux.Router {
 	// Job routes
 	r.HandleFunc("/jobs", handlers.GetJobs).Methods("GET")
 	r.HandleFunc("/jobs/new", handlers.PostJob).Methods("POST")
+	r.HandleFunc("/jobs/category/{category}", handlers.GetJobsByCategory).Methods("GET")
 
 	// Candidate routes
 	r.HandleFunc("/candidates", handlers.GetCandidates).Methods("GET")
