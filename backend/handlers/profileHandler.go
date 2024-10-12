@@ -30,5 +30,11 @@ func PostCandidate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to create candidate", http.StatusInternalServerError)
 		return
 	}
+
+	// Send acknowledgment to the user
+	response := map[string]string{
+		"message": "Candidate made successfully",
+	}
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
 }
