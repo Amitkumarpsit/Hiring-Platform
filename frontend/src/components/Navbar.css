@@ -92,3 +92,46 @@
     margin: 0 0.5rem;
   }
 }
+.user-actions {
+  display: flex;
+  align-items: center;
+}
+
+.logout-icon {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.logout-icon:hover {
+  color: #ff00ff;
+}
+
+.login-link {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #ff00ff;
+}
+
+.login-link span {
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .user-actions {
+    margin-top: 1rem;
+  }
+  
+  .login-link {
+    margin-top: 1rem;
+  }
+}

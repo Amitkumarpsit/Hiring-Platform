@@ -6,11 +6,22 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
+// interceptor to include the token in all requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export const getJobs = () => api.get('/jobs');
 export const postJob = (job) => api.post('/jobs/new', job);
 export const getCandidates = () => api.get('/candidates');
 export const postCandidate = (candidate) => api.post('/candidates/new', candidate);
 export const updateProfile = (profile) => api.put('/profile', profile);
+export const login = (credentials) => api.post('/login', credentials);
+export const register = (userData) => api.post('/register', userData);
 
 // Updated submitApplication function
 export const submitApplication = async (applicationData) => {

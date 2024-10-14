@@ -1,11 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import JobList from './components/JobList';
 import JobPost from './components/JobPost';
 import Profile from './components/Profile';
+import Login from './components/Login';
 import './App.css';
+
+function PrivateRoute({ children }) {
+  const isAuthenticated = !!localStorage.getItem('token');
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
 
 function App() {
   return (
@@ -16,8 +22,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/jobs" element={<JobList />} />
-            <Route path="/post-job" element={<JobPost />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/post-job" element={<PrivateRoute><JobPost /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </div>

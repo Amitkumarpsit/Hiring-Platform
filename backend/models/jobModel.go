@@ -11,6 +11,7 @@ type Job struct {
 	Qualifications   string             `bson:"qualifications"`
 	Location         string             `bson:"location"`
 	Category         string             `bson:"category"`
+	CreatedBy        string             `bson:"createdBy"`
 }
 
 // JobCategory defines the available job categories
