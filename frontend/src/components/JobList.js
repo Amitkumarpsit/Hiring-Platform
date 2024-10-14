@@ -30,7 +30,7 @@ function JobList() {
     <div>
       <h2>Job Listings</h2>
       {jobs.length === 0 ? (
-        <p>No jobs available at the moment.</p>
+        <p>No jobs available at the moment</p>
       ) : (
         jobs.map((job) => (
           <div key={job.ID} style={{border: '1px solid #ddd', margin: '10px 0', padding: '10px'}}>

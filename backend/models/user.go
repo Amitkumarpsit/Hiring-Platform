@@ -6,9 +6,15 @@ import (
 )
 
 type User struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty"`
-	Username string             `bson:"username"`
-	Password string             `bson:"password"`
+	ID             primitive.ObjectID `bson:"_id,omitempty"`
+	FullName       string             `bson:"fullName"`
+	PhoneNumber    string             `bson:"phoneNumber"`
+	Email          string             `bson:"email"`
+	Address        string             `bson:"address"`
+	Skills         []string           `bson:"skills"`
+	Course         string             `bson:"course"`
+	Specialization string             `bson:"specialization"`
+	Password       string             `bson:"password"`
 }
 
 func (u *User) HashPassword() error {

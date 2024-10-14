@@ -8,6 +8,7 @@ import (
 
 type Application struct {
 	ID            primitive.ObjectID `bson:"_id,omitempty"`
+	UserID        string             `bson:"userId"`
 	JobID         primitive.ObjectID `bson:"jobId"`
 	FullName      string             `bson:"fullName"`
 	Email         string             `bson:"email"`

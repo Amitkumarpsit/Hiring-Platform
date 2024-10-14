@@ -21,7 +21,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/jobs" element={<JobList />} />
+            <Route path="/jobs" element={<PrivateRoute><JobList /></PrivateRoute>} />
             <Route path="/post-job" element={<PrivateRoute><JobPost /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/login" element={<Login />} />

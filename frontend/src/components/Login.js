@@ -4,7 +4,7 @@ import { login } from '../api/api';
 import './Login.css';
 
 function Login() {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ loginID: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,10 +29,10 @@ function Login() {
       <form onSubmit={handleSubmit} className="login-form">
         <input
           type="text"
-          name="username"
-          value={credentials.username}
+          name="loginID"
+          value={credentials.loginID}
           onChange={handleChange}
-          placeholder="Username"
+          placeholder="Email or Phone Number"
           required
         />
         <input

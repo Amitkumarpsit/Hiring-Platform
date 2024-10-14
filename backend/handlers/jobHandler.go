@@ -6,6 +6,7 @@ import (
 	"backend/repository"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -75,4 +76,41 @@ func GetJobsByCategory(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(jobs)
+}
+
+func ApplyForJob(w http.ResponseWriter, r *http.Request) {
+	var application models.Application
+	if err := json.NewDecoder(r.Body).Decode(&application); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	// Check if user has already applied for this job
+	applied, err := repository.HasUserAppliedForJob(userID, application.JobID)
+	if err != nil {
+		http.Error(w, "Error checking application status", http.StatusInternalServerError)
+		return
+	}
+	if applied {
+		http.Error(w, "Already applied for this job post", http.StatusConflict)
+		return
+	}
+
+	// Set the UserID and AppliedAt fields
+	application.UserID = userID
+	application.AppliedAt = time.Now()
+
+	if err := repository.CreateApplication(application); err != nil {
+		http.Error(w, "Error creating application", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Application submitted successfully"})
 }

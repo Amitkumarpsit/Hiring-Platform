@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
-import { postCandidate } from '../api/api';
+import { updateProfile } from '../api/api';
 
 function Profile() {
-  const [candidate, setCandidate] = useState({ name: '', skills: [], resume: '' });
+  const [profile, setProfile] = useState({
+    fullName: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
+    skills: '',
+    course: '',
+    specialization: '',
+  });
 
   const handleChange = (e) => {
-    if (e.target.name === 'skills') {
-      setCandidate({ ...candidate, skills: e.target.value.split(',') });
-    } else {
-      setCandidate({ ...candidate, [e.target.name]: e.target.value });
-    }
+    setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await postCandidate(candidate);
+      await updateProfile({
+        ...profile,
+        skills: profile.skills.split(',').map(skill => skill.trim()),
+      });
       alert('Profile updated successfully!');
-      setCandidate({ name: '', skills: [], resume: '' });
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile. Please try again.');
@@ -29,25 +35,58 @@ function Profile() {
       <h2>Update Profile</h2>
       <input
         type="text"
-        name="name"
-        value={candidate.name}
+        name="fullName"
+        value={profile.fullName}
         onChange={handleChange}
         placeholder="Full Name"
         required
       />
       <input
+        type="tel"
+        name="phoneNumber"
+        value={profile.phoneNumber}
+        onChange={handleChange}
+        placeholder="Phone Number"
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        value={profile.email}
+        onChange={handleChange}
+        placeholder="Email"
+        required
+      />
+      <input
+        type="text"
+        name="address"
+        value={profile.address}
+        onChange={handleChange}
+        placeholder="Address"
+        required
+      />
+      <input
         type="text"
         name="skills"
-        value={candidate.skills.join(',')}
+        value={profile.skills}
         onChange={handleChange}
         placeholder="Skills (comma-separated)"
         required
       />
-      <textarea
-        name="resume"
-        value={candidate.resume}
+      <input
+        type="text"
+        name="course"
+        value={profile.course}
         onChange={handleChange}
-        placeholder="Paste your resume here"
+        placeholder="Course"
+        required
+      />
+      <input
+        type="text"
+        name="specialization"
+        value={profile.specialization}
+        onChange={handleChange}
+        placeholder="Specialization"
         required
       />
       <button type="submit">Update Profile</button>
