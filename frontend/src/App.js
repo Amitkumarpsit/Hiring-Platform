@@ -5,18 +5,21 @@ import Dashboard from './components/Dashboard';
 import JobList from './components/JobList';
 import JobPost from './components/JobPost';
 import Profile from './components/Profile';
+import './App.css';
 
 function App() {
   return (
     <Router>
-      <div>
+      <div className="app">
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/jobs" element={<JobList />} />
-          <Route path="/post-job" element={<JobPost />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/jobs" element={<JobList />} />
+            <Route path="/post-job" element={<JobPost />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
