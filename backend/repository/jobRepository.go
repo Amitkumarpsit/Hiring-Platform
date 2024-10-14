@@ -5,6 +5,9 @@ import (
 	"backend/config"
 	"backend/models"
 	"context"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateJob inserts a new job into the database
@@ -28,4 +31,12 @@ func GetAllJobs() ([]models.Job, error) {
 func CreateApplication(application models.Application) error {
 	_, err := config.DB.Collection("applications").InsertOne(context.Background(), application)
 	return err
+}
+
+func HasUserAppliedForJob(userID string, jobID primitive.ObjectID) (bool, error) {
+	count, err := config.DB.Collection("applications").CountDocuments(
+		context.Background(),
+		bson.M{"userId": userID, "jobId": jobID},
+	)
+	return count > 0, err
 }

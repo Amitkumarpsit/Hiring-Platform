@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func CreateUser(user models.User) error {
@@ -14,11 +13,12 @@ func CreateUser(user models.User) error {
 	return err
 }
 
-func GetUserByUsername(username string) (models.User, error) {
+func GetUserByLoginID(loginID string) (models.User, error) {
 	var user models.User
-	err := config.DB.Collection("users").FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
-	if err == mongo.ErrNoDocuments {
-		return user, err
-	}
+	filter := bson.M{"$or": []bson.M{
+		{"phoneNumber": loginID},
+		{"email": loginID},
+	}}
+	err := config.DB.Collection("users").FindOne(context.Background(), filter).Decode(&user)
 	return user, err
 }
