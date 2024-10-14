@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"backend/repository"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -80,37 +81,56 @@ func GetJobsByCategory(w http.ResponseWriter, r *http.Request) {
 
 func ApplyForJob(w http.ResponseWriter, r *http.Request) {
 	var application models.Application
+
+	// Decode the request body into application model
 	if err := json.NewDecoder(r.Body).Decode(&application); err != nil {
+		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
+	// Retrieve userID from context (assuming AuthMiddleware sets it)
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {
+		log.Printf("User not authenticated")
 		http.Error(w, "User not authenticated", http.StatusUnauthorized)
 		return
 	}
 
-	// Check if user has already applied for this job
+	// Convert JobID from string to ObjectID (ensure frontend sends a valid string)
+	jobID, err := primitive.ObjectIDFromHex(application.JobID.Hex())
+	if err != nil {
+		log.Printf("Invalid JobID format: %v", err)
+		http.Error(w, "Invalid JobID", http.StatusBadRequest)
+		return
+	}
+	application.JobID = jobID
+
+	// Check if the user has already applied for this job
 	applied, err := repository.HasUserAppliedForJob(userID, application.JobID)
 	if err != nil {
+		log.Printf("Error checking if user has applied: %v", err)
 		http.Error(w, "Error checking application status", http.StatusInternalServerError)
 		return
 	}
 	if applied {
+		log.Printf("User has already applied for this job")
 		http.Error(w, "Already applied for this job post", http.StatusConflict)
 		return
 	}
 
-	// Set the UserID and AppliedAt fields
+	// Set additional fields
 	application.UserID = userID
 	application.AppliedAt = time.Now()
 
+	// Save application to the database
 	if err := repository.CreateApplication(application); err != nil {
+		log.Printf("Error creating application: %v", err)
 		http.Error(w, "Error creating application", http.StatusInternalServerError)
 		return
 	}
 
+	log.Printf("Application submitted successfully for user %s", userID)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Application submitted successfully"})
 }

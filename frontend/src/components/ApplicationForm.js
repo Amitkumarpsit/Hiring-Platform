@@ -13,8 +13,11 @@ function ApplicationForm({ jobId, onClose }) {
   });
 
   const handleChange = (e) => {
-    const value = e.target.name === 'age' ? parseInt(e.target.value) : e.target.value;
-    setFormData({ ...formData, [e.target.name]: value });
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === 'age' ? parseInt(value) : value,  // Convert age to an integer
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -22,29 +25,73 @@ function ApplicationForm({ jobId, onClose }) {
     try {
       const applicationData = {
         ...formData,
-        jobId,
+        jobId: jobId,  // Ensure this is the correct job ID format
+        courseEndDate: `${formData.courseEndDate}T00:00:00Z`,  // Convert date to full timestamp format
         age: parseInt(formData.age),
       };
-      console.log('Submitting application with data:', applicationData);
       const response = await submitApplication(applicationData);
-      console.log('Application submission response:', response);
       alert('Application submitted successfully!');
       onClose();
     } catch (error) {
-      console.error('Error submitting application:', error.response || error);
-      alert('Failed to submit application. Please try again.');
+      console.error('Failed to submit application:', error);
+      alert('Failed to submit application. Check the console for more details.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Full Name" required />
-      <input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-      <input name="age" type="number" value={formData.age} onChange={handleChange} placeholder="Age" required />
-      <input name="course" value={formData.course} onChange={handleChange} placeholder="Course" required />
-      <input name="courseEndDate" type="date" value={formData.courseEndDate} onChange={handleChange} placeholder="Course End Date" required />
-      <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" required />
-      <input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" required />
+      <input
+        name="fullName"
+        value={formData.fullName}
+        onChange={handleChange}
+        placeholder="Full Name"
+        required
+      />
+      <input
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Email"
+        required
+      />
+      <input
+        name="age"
+        type="number"
+        value={formData.age}
+        onChange={handleChange}
+        placeholder="Age"
+        required
+      />
+      <input
+        name="course"
+        value={formData.course}
+        onChange={handleChange}
+        placeholder="Course"
+        required
+      />
+      <input
+        name="courseEndDate"
+        type="date"
+        value={formData.courseEndDate}
+        onChange={handleChange}
+        placeholder="Course End Date"
+        required
+      />
+      <input
+        name="address"
+        value={formData.address}
+        onChange={handleChange}
+        placeholder="Address"
+        required
+      />
+      <input
+        name="phoneNumber"
+        value={formData.phoneNumber}
+        onChange={handleChange}
+        placeholder="Phone Number"
+        required
+      />
       <button type="submit">Submit Application</button>
     </form>
   );
