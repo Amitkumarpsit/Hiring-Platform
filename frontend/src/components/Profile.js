@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
-import { updateProfile } from '../api/api';
+import React, { useState, useEffect } from 'react';
+import api from '../api/api';
+import './Profile.css';
 
 function Profile() {
-  const [profile, setProfile] = useState({
-    fullName: '',
-    phoneNumber: '',
-    email: '',
-    address: '',
-    skills: '',
-    course: '',
-    specialization: '',
-  });
+  const [profile, setProfile] = useState(null); // To store the fetched profile
+  const [isEditing, setIsEditing] = useState(false); // To toggle update form visibility
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/profile');
+        if (response.status === 200) {
+          setProfile(response.data);
+        } else {
+          console.log('Error fetching profile');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -19,11 +30,12 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateProfile({
+      await api.put('/profile', {
         ...profile,
-        skills: profile.skills.split(',').map(skill => skill.trim()),
+        Skills: profile.Skills ? profile.Skills.split(',').map(skill => skill.trim()) : [],
       });
       alert('Profile updated successfully!');
+      setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile. Please try again.');
@@ -31,66 +43,85 @@ function Profile() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Update Profile</h2>
-      <input
-        type="text"
-        name="fullName"
-        value={profile.fullName}
-        onChange={handleChange}
-        placeholder="Full Name"
-        required
-      />
-      <input
-        type="tel"
-        name="phoneNumber"
-        value={profile.phoneNumber}
-        onChange={handleChange}
-        placeholder="Phone Number"
-        required
-      />
-      <input
-        type="email"
-        name="email"
-        value={profile.email}
-        onChange={handleChange}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="text"
-        name="address"
-        value={profile.address}
-        onChange={handleChange}
-        placeholder="Address"
-        required
-      />
-      <input
-        type="text"
-        name="skills"
-        value={profile.skills}
-        onChange={handleChange}
-        placeholder="Skills (comma-separated)"
-        required
-      />
-      <input
-        type="text"
-        name="course"
-        value={profile.course}
-        onChange={handleChange}
-        placeholder="Course"
-        required
-      />
-      <input
-        type="text"
-        name="specialization"
-        value={profile.specialization}
-        onChange={handleChange}
-        placeholder="Specialization"
-        required
-      />
-      <button type="submit">Update Profile</button>
-    </form>
+    <div className="profile-card">
+      {!isEditing ? (
+        profile ? (
+          <div className="profile-details">
+            <h2>{profile.FullName || 'Full Name'}</h2>
+            <p><strong>Email:</strong> {profile.Email || 'N/A'}</p>
+            <p><strong>Phone:</strong> {profile.PhoneNumber || 'N/A'}</p>
+            <p><strong>Address:</strong> {profile.Address || 'N/A'}</p>
+            <p><strong>Skills:</strong> {profile.Skills && profile.Skills.length > 0 ? profile.Skills.join(', ') : 'N/A'}</p>
+            <p><strong>Course:</strong> {profile.Course || 'N/A'}</p>
+            <p><strong>Specialization:</strong> {profile.Specialization || 'N/A'}</p>
+            <button onClick={() => setIsEditing(true)}>Update Profile</button>
+          </div>
+        ) : (
+          <p>Loading...</p>
+        )
+      ) : (
+        <form onSubmit={handleSubmit} className="profile-form">
+          <input
+            type="text"
+            name="FullName"
+            value={profile?.FullName || ''}
+            onChange={handleChange}
+            placeholder="Full Name"
+            required
+          />
+          <input
+            type="tel"
+            name="PhoneNumber"
+            value={profile?.PhoneNumber || ''}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            required
+          />
+          <input
+            type="email"
+            name="Email"
+            value={profile?.Email || ''}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+          <input
+            type="text"
+            name="Address"
+            value={profile?.Address || ''}
+            onChange={handleChange}
+            placeholder="Address"
+            required
+          />
+          <input
+            type="text"
+            name="Skills"
+            value={profile?.Skills ? profile.Skills.join(', ') : ''}
+            onChange={handleChange}
+            placeholder="Skills (comma-separated)"
+            required
+          />
+          <input
+            type="text"
+            name="Course"
+            value={profile?.Course || ''}
+            onChange={handleChange}
+            placeholder="Course"
+            required
+          />
+          <input
+            type="text"
+            name="Specialization"
+            value={profile?.Specialization || ''}
+            onChange={handleChange}
+            placeholder="Specialization"
+            required
+          />
+          <button type="submit">Save</button>
+          <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+        </form>
+      )}
+    </div>
   );
 }
 
