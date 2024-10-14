@@ -12,34 +12,35 @@ import (
 )
 
 type ApplicationInput struct {
-	JobID         string `json:"jobId"`
+	JobID         string `json:"jobId"` // Expecting JobID as a string
 	FullName      string `json:"fullName"`
 	Email         string `json:"email"`
 	Age           int    `json:"age"`
 	Course        string `json:"course"`
-	CourseEndDate string `json:"courseEndDate"`
+	CourseEndDate string `json:"courseEndDate"` // Date as a string
 	Address       string `json:"address"`
 	PhoneNumber   string `json:"phoneNumber"`
 }
 
 func PostApplication(w http.ResponseWriter, r *http.Request) {
 	var input ApplicationInput
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		log.Printf("Error decoding application JSON: %v", err)
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	// Parse the JobID
+	// Log incoming request payload
+	log.Printf("Received application payload: %+v", input)
+
 	jobID, err := primitive.ObjectIDFromHex(input.JobID)
 	if err != nil {
 		log.Printf("Error parsing JobID: %v", err)
 		http.Error(w, "Invalid JobID", http.StatusBadRequest)
 		return
 	}
+	log.Printf("Parsed JobID: %s", jobID.Hex())
 
-	// Parse the CourseEndDate
 	courseEndDate, err := time.Parse("2006-01-02", input.CourseEndDate)
 	if err != nil {
 		log.Printf("Error parsing CourseEndDate: %v", err)
@@ -47,7 +48,8 @@ func PostApplication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	application := models.Application{
+	// Save application to DB
+	err = repository.CreateApplication(models.Application{
 		ID:            primitive.NewObjectID(),
 		JobID:         jobID,
 		FullName:      input.FullName,
@@ -58,22 +60,17 @@ func PostApplication(w http.ResponseWriter, r *http.Request) {
 		Address:       input.Address,
 		PhoneNumber:   input.PhoneNumber,
 		AppliedAt:     time.Now(),
-	}
-
-	// Save the application to the database
-	err = repository.CreateApplication(application)
+	})
 	if err != nil {
 		log.Printf("Error creating application: %v", err)
 		http.Error(w, "Failed to submit application", http.StatusInternalServerError)
 		return
 	}
 
-	// Send acknowledgment to the user
-	response := map[string]string{
-		"message": "Application submitted successfully",
-	}
-
-	// Respond to the user with a success message
+	// Log success and respond
+	log.Printf("Application created successfully for JobID: %s", jobID.Hex())
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Application submitted successfully",
+	})
 }
