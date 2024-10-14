@@ -1,10 +1,10 @@
-// backend/repository/jobRepository.go
 package repository
 
 import (
 	"backend/config"
 	"backend/models"
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -30,7 +30,11 @@ func GetAllJobs() ([]models.Job, error) {
 
 func CreateApplication(application models.Application) error {
 	_, err := config.DB.Collection("applications").InsertOne(context.Background(), application)
-	return err
+	if err != nil {
+		log.Printf("Error inserting application into database: %v", err)
+		return err
+	}
+	return nil
 }
 
 func HasUserAppliedForJob(userID string, jobID primitive.ObjectID) (bool, error) {
@@ -38,5 +42,8 @@ func HasUserAppliedForJob(userID string, jobID primitive.ObjectID) (bool, error)
 		context.Background(),
 		bson.M{"userId": userID, "jobId": jobID},
 	)
-	return count > 0, err
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

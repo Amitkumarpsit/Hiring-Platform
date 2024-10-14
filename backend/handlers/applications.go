@@ -48,9 +48,31 @@ func PostApplication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Retrieve userID from context (assuming AuthMiddleware sets it)
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		log.Printf("User not authenticated")
+		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	// Check if the user has already applied for this job
+	hasApplied, err := repository.HasUserAppliedForJob(userID, jobID)
+	if err != nil {
+		log.Printf("Error checking existing application: %v", err)
+		http.Error(w, "Error checking application status", http.StatusInternalServerError)
+		return
+	}
+	if hasApplied {
+		log.Printf("User %s has already applied for job %s", userID, jobID.Hex())
+		http.Error(w, "You have already applied for this job", http.StatusConflict)
+		return
+	}
+
 	// Save application to DB
-	err = repository.CreateApplication(models.Application{
+	application := models.Application{
 		ID:            primitive.NewObjectID(),
+		UserID:        userID,
 		JobID:         jobID,
 		FullName:      input.FullName,
 		Email:         input.Email,
@@ -60,7 +82,9 @@ func PostApplication(w http.ResponseWriter, r *http.Request) {
 		Address:       input.Address,
 		PhoneNumber:   input.PhoneNumber,
 		AppliedAt:     time.Now(),
-	})
+	}
+
+	err = repository.CreateApplication(application)
 	if err != nil {
 		log.Printf("Error creating application: %v", err)
 		http.Error(w, "Failed to submit application", http.StatusInternalServerError)

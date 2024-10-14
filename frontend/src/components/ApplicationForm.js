@@ -12,27 +12,41 @@ function ApplicationForm({ jobId, onClose }) {
     phoneNumber: '',
   });
 
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
   const handleChange = (e) => {
-    const value = e.target.name === 'age' ? parseInt(e.target.value) : e.target.value;
-    setFormData({ ...formData, [e.target.name]: value });
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: name === 'age' ? (value === '' ? '' : parseInt(value, 10)) : value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
     try {
       const applicationData = {
         ...formData,
         jobId,
-        age: parseInt(formData.age),
       };
       console.log('Submitting application with data:', applicationData);
       const response = await submitApplication(applicationData);
       console.log('Application submission response:', response);
-      alert('Application submitted successfully!');
-      onClose();
+      setSuccess('Application submitted successfully!');
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (error) {
-      console.error('Error submitting application:', error.response || error);
-      alert('Failed to submit application. Please try again.');
+      console.error('Error submitting application:', error);
+      if (error.response && error.response.status === 409) {
+        setError('You have already applied for this job.');
+      } else {
+        setError(error.response?.data?.message || 'Failed to submit application. Please try again.');
+      }
     }
   };
 
@@ -45,6 +59,8 @@ function ApplicationForm({ jobId, onClose }) {
       <input name="courseEndDate" type="date" value={formData.courseEndDate} onChange={handleChange} placeholder="Course End Date" required />
       <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" required />
       <input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" required />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
       <button type="submit">Submit Application</button>
     </form>
   );

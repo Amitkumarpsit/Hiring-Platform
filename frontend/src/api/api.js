@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// interceptor to include the token in all requests
+// Interceptor to include the token in all requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -23,12 +23,10 @@ export const updateProfile = (profile) => api.put('/profile', profile);
 export const login = (credentials) => api.post('/login', credentials);
 export const register = (userData) => api.post('/register', userData);
 
-// Updated submitApplication function
 export const submitApplication = async (applicationData) => {
   try {
     const response = await api.post('/applications', applicationData);
-    console.log('Application submission response:', response);
-    return response;
+    return response.data;
   } catch (error) {
     console.error('Error submitting application:', error.response || error);
     throw error;
