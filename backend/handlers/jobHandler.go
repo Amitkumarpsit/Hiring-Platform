@@ -40,12 +40,21 @@ func PostJob(w http.ResponseWriter, r *http.Request) {
 	}
 
 	job.ID = primitive.NewObjectID()
+
+	// Get the user ID from the context (set by the AuthMiddleware)
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		return
+	}
+	job.CreatedBy = userID
+
 	err = repository.CreateJob(job)
 	if err != nil {
 		http.Error(w, "Failed to post job", http.StatusInternalServerError)
 		return
 	}
-	// Send acknowledgment to the user
+
 	response := map[string]string{
 		"message": "Job submitted successfully",
 	}

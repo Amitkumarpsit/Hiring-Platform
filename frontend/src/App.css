@@ -1,0 +1,44 @@
+/* App.css */
+.app {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #130f40 0%, #000000 100%);
+    color: #fff;
+  }
+  
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  h1, h2, h3 {
+    color: #fff;
+  }
+  
+  button {
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  
+  input, textarea {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #ff00ff;
+  }
