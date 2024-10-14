@@ -23,14 +23,14 @@ export const updateProfile = (profile) => api.put('/profile', profile);
 export const login = (credentials) => api.post('/login', credentials);
 export const register = (userData) => api.post('/register', userData);
 
+// Updated submitApplication function
 export const submitApplication = async (applicationData) => {
   try {
     const response = await api.post('/applications', applicationData);
     console.log('Application submission response:', response);
     return response;
   } catch (error) {
-    console.error('Error submitting application:', error.response ? error.response.data : error.message);
-    alert('Error: ' + (error.response ? error.response.data : error.message));
+    console.error('Error submitting application:', error.response || error);
     throw error;
   }
 };

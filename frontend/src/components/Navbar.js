@@ -23,9 +23,9 @@ const Navbar = () => {
         </div>
         <div className="navbar-center">
           <Link to="/" className="nav-link">HOME</Link>
-          <Link to="/jobs" className="nav-link">GET JOB</Link>
           {isAuthenticated && (
             <>
+              <Link to="/jobs" className="nav-link">GET JOB</Link> {/* This will only show after login */}
               <Link to="/post-job" className="nav-link">POST JOBS</Link>
               <Link to="/profile" className="nav-link">PROFILE</Link>
             </>

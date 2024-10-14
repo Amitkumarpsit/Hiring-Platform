@@ -21,6 +21,9 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/candidates", middleware.AuthMiddleware(handlers.GetCandidates)).Methods("GET")
 	r.HandleFunc("/candidates/new", middleware.AuthMiddleware(handlers.PostCandidate)).Methods("POST")
 	r.HandleFunc("/applications", middleware.AuthMiddleware(handlers.ApplyForJob)).Methods("POST")
+	//user profile
+	r.HandleFunc("/profile", middleware.AuthMiddleware(handlers.GetProfile)).Methods("GET")
+	r.HandleFunc("/profile", middleware.AuthMiddleware(handlers.UpdateProfile)).Methods("PUT")
 
 	return r
 }
