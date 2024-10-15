@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/api';
-import './Profile.css';
+import './css/Profile.css';
 
 function Profile() {
   const [profile, setProfile] = useState(null); // To store the fetched profile
