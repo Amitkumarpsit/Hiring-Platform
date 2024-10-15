@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch, FaUser, FaSignOutAlt } from 'react-icons/fa';
-import './Navbar.css';
+import './css/Navbar.css';
 
 const Navbar = () => {
   const navigate = useNavigate();

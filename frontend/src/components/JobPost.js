@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { postJob } from '../api/api';
-import './JobPost.css';
+import './css/JobPost.css';
 
 function JobPost() {
   const [job, setJob] = useState({
