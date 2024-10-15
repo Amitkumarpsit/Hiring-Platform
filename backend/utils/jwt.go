@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"time"
 
@@ -39,4 +41,10 @@ func ValidateJWT(tokenString string) (string, error) {
 	}
 
 	return "", errors.New("invalid token")
+}
+
+func GenerateResetToken() string {
+	b := make([]byte, 32)
+	rand.Read(b)
+	return base64.URLEncoding.EncodeToString(b)
 }

@@ -13,6 +13,8 @@ func SetupRoutes() *mux.Router {
 	// Public routes
 	r.HandleFunc("/register", handlers.Register).Methods("POST")
 	r.HandleFunc("/login", handlers.Login).Methods("POST")
+	r.HandleFunc("/forgot-password", handlers.ForgotPassword).Methods("POST")
+	r.HandleFunc("/reset-password", handlers.ResetPassword).Methods("POST")
 
 	// Protected routes
 	r.HandleFunc("/jobs", middleware.AuthMiddleware(handlers.GetJobs)).Methods("GET")

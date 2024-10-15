@@ -6,6 +6,7 @@ import (
 	"backend/utils"
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -57,4 +58,58 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(map[string]string{"token": token})
+}
+
+func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	var request struct {
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	user, err := repository.GetUserByEmail(request.Email)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	resetToken := utils.GenerateResetToken()
+	expirationTime := time.Now().Add(15 * time.Minute)
+
+	if err := repository.SaveResetToken(user.ID, resetToken, expirationTime); err != nil {
+		http.Error(w, "Error saving reset token", http.StatusInternalServerError)
+		return
+	}
+
+	// TODO: Send email with reset token (implement email sending functionality)
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Password reset instructions sent to email"})
+}
+
+func ResetPassword(w http.ResponseWriter, r *http.Request) {
+	var request struct {
+		ResetToken  string `json:"resetToken"`
+		NewPassword string `json:"newPassword"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := repository.ValidateResetToken(request.ResetToken)
+	if err != nil {
+		http.Error(w, "Invalid or expired reset token", http.StatusBadRequest)
+		return
+	}
+
+	if err := repository.UpdatePassword(userID, request.NewPassword); err != nil {
+		http.Error(w, "Error updating password", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Password reset successfully"})
 }
