@@ -27,4 +27,5 @@ func SetupRoutes() *mux.Router {
 	api.HandleFunc("/profile", middleware.AuthMiddleware(handlers.UpdateProfile)).Methods("PUT")
 
 	return api
+	//added
 }
