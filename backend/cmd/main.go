@@ -18,11 +18,11 @@ func main() {
 
 	// Create a new CORS handler
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000"}, // Allow requests from your React app
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"*"},
-		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization", "X-Requested-With"},
+		AllowCredentials: true,
+		Debug:            true,
 	})
 
 	// Wrap the router with the CORS handler

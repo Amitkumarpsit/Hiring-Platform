@@ -15,6 +15,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Existing exports
 export const getJobs = () => api.get('/jobs');
 export const postJob = (job) => api.post('/jobs/new', job);
 export const getCandidates = () => api.get('/candidates');
@@ -22,6 +23,16 @@ export const postCandidate = (candidate) => api.post('/candidates/new', candidat
 export const updateProfile = (profile) => api.put('/profile', profile);
 export const login = (credentials) => api.post('/login', credentials);
 export const register = (userData) => api.post('/register', userData);
+
+// New password reset exports
+export const forgotPassword = (email) => 
+  api.post('/forgot-password', { email }, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+export const resetPassword = (resetToken, newPassword) => 
+  api.post('/reset-password', { resetToken, newPassword });
 
 export const submitApplication = async (applicationData) => {
   try {
