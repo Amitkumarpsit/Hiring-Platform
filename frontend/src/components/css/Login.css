@@ -42,3 +42,16 @@
   .login-form button:hover {
     opacity: 0.9;
   }
+  .forgot-password {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.forgot-password a {
+    color: white; /* Change the link color to white */
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline; /* Optionally, add underline on hover */
+}
