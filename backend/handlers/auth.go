@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"backend/config"
 	"backend/models"
 	"backend/repository"
 	"backend/utils"
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -83,7 +86,20 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Send email with reset token (implement email sending functionality)
+	resetLink := fmt.Sprintf("http://localhost:3000/reset-password?token=%s", resetToken)
+	emailBody := fmt.Sprintf(`
+		<h2>Password Reset Request</h2>
+		<p>Click the link below to reset your password:</p>
+		<a href="%s">Reset Password</a>
+		<p>This link will expire in 15 minutes.</p>
+		<p>If you didn't request this, please ignore this email.</p>
+	`, resetLink)
+
+	if err := config.SendEmail(user.Email, "Password Reset Request", emailBody); err != nil {
+		log.Printf("Error sending email: %v", err)
+		http.Error(w, "Error sending email", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Password reset instructions sent to email"})

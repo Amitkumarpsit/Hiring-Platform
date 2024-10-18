@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../api/api';
 import './css/Login.css';
 
@@ -45,6 +45,9 @@ function Login() {
         />
         <button type="submit">Login</button>
       </form>
+      <div className="forgot-password">
+        <Link to="/forgot-password">Forgot Password?</Link>
+      </div>
     </div>
   );
 }

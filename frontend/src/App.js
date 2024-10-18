@@ -6,6 +6,8 @@ import JobList from './components/JobList';
 import JobPost from './components/JobPost';
 import Profile from './components/Profile';
 import Login from './components/Login';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -25,6 +27,8 @@ function App() {
             <Route path="/post-job" element={<PrivateRoute><JobPost /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
         </div>
       </div>
