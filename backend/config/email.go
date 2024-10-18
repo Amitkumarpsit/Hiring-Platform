@@ -1,7 +1,11 @@
 package config
 
 import (
+	"log"
 	"net/smtp"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type EmailConfig struct {
@@ -11,11 +15,22 @@ type EmailConfig struct {
 	SMTPPassword string
 }
 
-var MailConfig = EmailConfig{
-	SMTPHost:     "smtp.gmail.com",
-	SMTPPort:     "587",
-	SMTPUsername: "siddharth63717@gmail.com", // Replace with your actual email
-	SMTPPassword: "wpkmgavyvgxdmvbs",         // Replace with your actual app password
+var MailConfig EmailConfig
+
+func init() {
+	// Load the .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	// Initialize the MailConfig with environment variables
+	MailConfig = EmailConfig{
+		SMTPHost:     os.Getenv("SMTP_HOST"),
+		SMTPPort:     os.Getenv("SMTP_PORT"),
+		SMTPUsername: os.Getenv("SMTP_USERNAME"),
+		SMTPPassword: os.Getenv("SMTP_PASSWORD"),
+	}
 }
 
 func SendEmail(to string, subject string, body string) error {
