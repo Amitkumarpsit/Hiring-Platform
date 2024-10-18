@@ -26,6 +26,31 @@ func GetUserByLoginID(loginID string) (models.User, error) {
 	return user, err
 }
 
+func ValidateAuthToken(authToken string) (primitive.ObjectID, error) {
+	var user models.User
+	filter := bson.M{
+		"authToken":           authToken,
+		"authTokenExpiration": bson.M{"$gt": time.Now()},
+	}
+	err := config.DB.Collection("users").FindOne(context.Background(), filter).Decode(&user)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return user.ID, nil
+}
+
+func VerifyUser(userID primitive.ObjectID) error {
+	update := bson.M{
+		"$set": bson.M{
+			"isVerified":          true,
+			"authToken":           nil,
+			"authTokenExpiration": nil,
+		},
+	}
+	_, err := config.DB.Collection("users").UpdateOne(context.Background(), bson.M{"_id": userID}, update)
+	return err
+}
+
 func GetUserByEmail(email string) (models.User, error) {
 	var user models.User
 	filter := bson.M{"email": email}

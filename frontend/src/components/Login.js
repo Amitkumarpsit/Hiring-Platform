@@ -19,7 +19,7 @@ function Login() {
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
-      alert('Failed to login. Please check your credentials.');
+      alert('Failed to login. Please check your credentials. If you don\'t have an account, please register.');
     }
   };
 
@@ -47,6 +47,9 @@ function Login() {
       </form>
       <div className="forgot-password">
         <Link to="/forgot-password">Forgot Password?</Link>
+      </div>
+      <div className="register-link">
+        <p>Don't have an account? <Link to="/register">Register here</Link>.</p>
       </div>
     </div>
   );

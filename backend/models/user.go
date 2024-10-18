@@ -17,6 +17,9 @@ type User struct {
 	Course               string             `bson:"course"`
 	Specialization       string             `bson:"specialization"`
 	Password             string             `bson:"password"`
+	AuthToken            string             `bson:"authToken,omitempty"`
+	AuthTokenExpiration  time.Time          `bson:"authTokenExpiration,omitempty"`
+	IsVerified           bool               `bson:"isVerified"`
 	ResetToken           string             `bson:"resetToken,omitempty"`
 	ResetTokenExpiration time.Time          `bson:"resetTokenExpiration,omitempty"`
 }

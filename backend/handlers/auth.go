@@ -24,13 +24,58 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Generate authorization token
+	authToken := utils.GenerateResetToken()
+	expirationTime := time.Now().Add(24 * time.Hour) // Token valid for 24 hours
+
+	user.AuthToken = authToken
+	user.AuthTokenExpiration = expirationTime
+	user.IsVerified = false // Mark user as unverified initially
+
 	if err := repository.CreateUser(user); err != nil {
 		http.Error(w, "Error creating user", http.StatusInternalServerError)
 		return
 	}
 
+	// Send email with verification link
+	verificationLink := fmt.Sprintf("http://localhost:3000/verify-email?token=%s", authToken)
+	emailBody := fmt.Sprintf(`
+        <h2>Email Verification</h2>
+        <p>Click the link below to verify your email:</p>
+        <a href="%s">Verify Email</a>
+        <p>This link will expire in 24 hours.</p>
+    `, verificationLink)
+
+	if err := config.SendEmail(user.Email, "Email Verification", emailBody); err != nil {
+		log.Printf("Error sending email: %v", err)
+		http.Error(w, "Error sending email", http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully"})
+	json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully. Please check your email to verify your account."})
+}
+
+func VerifyEmail(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("token")
+	if token == "" {
+		http.Error(w, "Invalid token", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := repository.ValidateAuthToken(token)
+	if err != nil {
+		http.Error(w, "Invalid or expired token", http.StatusBadRequest)
+		return
+	}
+
+	if err := repository.VerifyUser(userID); err != nil {
+		http.Error(w, "Error verifying user", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Email verified successfully"})
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {

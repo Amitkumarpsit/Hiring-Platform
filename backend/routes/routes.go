@@ -12,6 +12,7 @@ func SetupRoutes() *mux.Router {
 
 	// Public routes
 	api.HandleFunc("/register", handlers.Register).Methods("POST")
+	api.HandleFunc("/verify-email", handlers.VerifyEmail).Methods("GET")
 	api.HandleFunc("/login", handlers.Login).Methods("POST")
 	api.HandleFunc("/forgot-password", handlers.ForgotPassword).Methods("POST")
 	api.HandleFunc("/reset-password", handlers.ResetPassword).Methods("POST")

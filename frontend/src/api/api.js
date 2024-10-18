@@ -15,6 +15,12 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Register a new user
+export const register = (userData) => api.post('/register', userData);
+
+// Verify email
+export const verifyEmail = (token) => api.get(`/verify-email?token=${token}`);
+
 // Existing exports
 export const getJobs = () => api.get('/jobs');
 export const postJob = (job) => api.post('/jobs/new', job);
@@ -22,7 +28,6 @@ export const getCandidates = () => api.get('/candidates');
 export const postCandidate = (candidate) => api.post('/candidates/new', candidate);
 export const updateProfile = (profile) => api.put('/profile', profile);
 export const login = (credentials) => api.post('/login', credentials);
-export const register = (userData) => api.post('/register', userData);
 
 // New password reset exports
 export const forgotPassword = (email) => 

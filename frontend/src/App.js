@@ -8,6 +8,8 @@ import Profile from './components/Profile';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import RegisterUser from './components/RegisterUser';
+import VerifyEmail from './components/VerifyEmail';  // Import VerifyEmail
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -29,6 +31,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/register" element={<RegisterUser />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />  {/* Add VerifyEmail route */}
           </Routes>
         </div>
       </div>
