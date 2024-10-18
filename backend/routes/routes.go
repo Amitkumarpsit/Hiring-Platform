@@ -8,23 +8,23 @@ import (
 )
 
 func SetupRoutes() *mux.Router {
-	r := mux.NewRouter()
+	api := mux.NewRouter()
 
 	// Public routes
-	r.HandleFunc("/register", handlers.Register).Methods("POST")
-	r.HandleFunc("/login", handlers.Login).Methods("POST")
-	r.HandleFunc("/forgot-password", handlers.ForgotPassword).Methods("POST")
-	r.HandleFunc("/reset-password", handlers.ResetPassword).Methods("POST")
+	api.HandleFunc("/register", handlers.Register).Methods("POST")
+	api.HandleFunc("/login", handlers.Login).Methods("POST")
+	api.HandleFunc("/forgot-password", handlers.ForgotPassword).Methods("POST")
+	api.HandleFunc("/reset-password", handlers.ResetPassword).Methods("POST")
 
 	// Protected routes
-	r.HandleFunc("/jobs", middleware.AuthMiddleware(handlers.GetJobs)).Methods("GET")
-	r.HandleFunc("/jobs/new", middleware.AuthMiddleware(handlers.PostJob)).Methods("POST")
-	r.HandleFunc("/jobs/category/{category}", middleware.AuthMiddleware(handlers.GetJobsByCategory)).Methods("GET")
-	r.HandleFunc("/candidates", middleware.AuthMiddleware(handlers.GetCandidates)).Methods("GET")
-	r.HandleFunc("/candidates/new", middleware.AuthMiddleware(handlers.PostCandidate)).Methods("POST")
-	r.HandleFunc("/applications", middleware.AuthMiddleware(handlers.PostApplication)).Methods("POST")
-	r.HandleFunc("/profile", middleware.AuthMiddleware(handlers.GetProfile)).Methods("GET")
-	r.HandleFunc("/profile", middleware.AuthMiddleware(handlers.UpdateProfile)).Methods("PUT")
+	api.HandleFunc("/jobs", middleware.AuthMiddleware(handlers.GetJobs)).Methods("GET")
+	api.HandleFunc("/jobs/new", middleware.AuthMiddleware(handlers.PostJob)).Methods("POST")
+	api.HandleFunc("/jobs/category/{category}", middleware.AuthMiddleware(handlers.GetJobsByCategory)).Methods("GET")
+	api.HandleFunc("/candidates", middleware.AuthMiddleware(handlers.GetCandidates)).Methods("GET")
+	api.HandleFunc("/candidates/new", middleware.AuthMiddleware(handlers.PostCandidate)).Methods("POST")
+	api.HandleFunc("/applications", middleware.AuthMiddleware(handlers.PostApplication)).Methods("POST")
+	api.HandleFunc("/profile", middleware.AuthMiddleware(handlers.GetProfile)).Methods("GET")
+	api.HandleFunc("/profile", middleware.AuthMiddleware(handlers.UpdateProfile)).Methods("PUT")
 
-	return r
+	return api
 }
